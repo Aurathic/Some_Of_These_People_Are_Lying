@@ -17,10 +17,10 @@
 </head>
 
 <body>
-    <div class="container border">
-        <h1 class="text-center">Some Of These People Are Lying</h1>
+    <div id="main" class="container border">
+        <h2 class="text-center">Some Of These People Are Lying</h2>
 
-        <div class="input-group mb-3">
+        <div class="input-group mb-3" id="add-team">
             <div class="input-group-prepend">
                 <label class="input-group-text">Add Team</label>
             </div>
@@ -28,34 +28,24 @@
             <button class="btn btn-outline-secondary" type="button">Add</button>
         </div>
 
-        <div class="input-group mb-3">
+        <div class="input-group mb-3" id="add-article">
             <div class="input-group-prepend">
                 <label class="input-group-text">Add Article</label>
             </div>
             <select class="custom-select">
                 <option selected>Choose Team...</option>
-                <option value="1">Team 1</option>
-                <option value="2">Team 2</option>
-                <option value="3">Team 3</option>
             </select>
             <input type="text" class="form-control">
             <button class="btn btn-outline-secondary" type="button">Add</button>
         </div>
 
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text">Get Article</label>
-            </div>
-            <select class="custom-select">
-                <option selected>Choose Team...</option>
-                <option value="1">Team 1</option>
-                <option value="2">Team 2</option>
-                <option value="3">Team 3</option>
-            </select>
-            <button class="btn btn-outline-secondary" type="button">Get</button>
+        <div class="input-group mb-3" id="get-article">
+            <button class="btn btn-outline-secondary btn-block" type="button">Pick An Article</button>
         </div>
 
-        <p class="text-center">Center aligned text on all viewport sizes.</p>
+        <div id="display">
+            <!-- Where the chosen articles / any warnings are displayed. -->
+        </div>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
