@@ -3,16 +3,19 @@
 let articles = {};
 
 const missingTeam = "Choose Team...";
+const judgingTeam = "Choose Judging Team...";
+const teamPlaceholders = [missingTeam, judgingTeam];
 
 /**
  * 
  * @param {*} parent Given element which will contain list of teams
+ * @param placeholder What text should be displayed first in the list as default value
  */
-function addTeamsToElement(parent) {
+function addTeamsToElement(parent, placeholder) {
     const teams = Object.keys(articles); //List of teams which should be added to the given element
 
     parent.empty();
-    parent.append($(`<option selected>${missingTeam}</option>`));
+    parent.append($(`<option selected>${placeholder}</option>`));
 
     for (const team of teams) {
         const teamOption = $(`<option value='${team}'>${team}</option>`);
@@ -37,6 +40,11 @@ function checkTeamsHaveArticles() {
 function addAlert(alertText) {
     const alert = $(`<div class="alert alert-warning" role="alert">${alertText}</div>`);
     $("#display").append(alert);
+}
+
+function addTeamsToDropdowns() {
+    addTeamsToElement($("#add-article > select"), missingTeam);
+    addTeamsToElement($("#get-article > select"), judgingTeam);
 }
 
 //https://stackoverflow.com/a/30832210
@@ -75,11 +83,11 @@ $("#add-team > button").click(
     function () {
         const teamName = $("#add-team > input");
         const teamNameStr = teamName.val().trim();
-        if ((teamNameStr != missingTeam) && (teamNameStr != "")
+        if (!(teamNameStr in teamPlaceholders)
+            && (teamNameStr != "")
             && !(teamNameStr in articles)) { // only add team if it's not the default value, or already a team
             articles[teamNameStr] = []; // add team to articles
-            addTeamsToElement($("#add-article > select"));
-            addTeamsToElement($("#get-article > select"));
+            addTeamsToDropdowns();
             teamName.val(""); //Clear input field
         }
     }
@@ -93,7 +101,7 @@ $("#add-article > button").click(
         const teamNameStr = teamName.val().trim();
         const articleNameStr = articleName.val().trim();
 
-        if ((teamNameStr != missingTeam)
+        if (!(teamNameStr in teamPlaceholders)
             && !(articleNameStr in articles[teamNameStr])) { // Only add article if it's not already in the list
             articles[teamNameStr].push(articleNameStr);
             console.log(articles);
@@ -147,10 +155,15 @@ $("#import").change(
             const articleJSON = JSON.parse(atob(fr.result));
             //console.log(articleJSON);
             articles = articleJSON;
-            addTeamsToElement($("#add-article > select"));
-            addTeamsToElement($("#get-article > select"));
+            addTeamsToDropdowns();
         }
         fr.readAsText(fileObj);
 
+    }
+)
+
+$(document).ready(
+    function () {
+        addTeamsToDropdowns();
     }
 )
