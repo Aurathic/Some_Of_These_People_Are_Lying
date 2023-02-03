@@ -1,15 +1,16 @@
 "use strict";
 
-const articles = {};
+let articles = {};
 
 const missingTeam = "Choose Team...";
 
 /**
  * 
- * @param {} teams List of teams which should be added to the given element
  * @param {*} parent Given element which will contain list of teams
  */
-function addTeamsToElement(teams, parent) {
+function addTeamsToElement(parent) {
+    const teams = Object.keys(articles); //List of teams which should be added to the given element
+
     parent.empty();
     parent.append($(`<option selected>${missingTeam}</option>`));
 
@@ -38,6 +39,20 @@ function addAlert(alertText) {
     $("#display").append(alert);
 }
 
+//https://stackoverflow.com/a/30832210
+function download(data, filename, type) {
+    var file = new Blob([data], { type: type });
+    var a = document.createElement("a"), url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 0);
+}
+
 /**
  * Pick and remove a random article from a random team.
  */
@@ -63,9 +78,8 @@ $("#add-team > button").click(
         if ((teamNameStr != missingTeam) && (teamNameStr != "")
             && !(teamNameStr in articles)) { // only add team if it's not the default value, or already a team
             articles[teamNameStr] = []; // add team to articles
-            const teams = Object.keys(articles);
-            addTeamsToElement(teams, $("#add-article > select"));
-            addTeamsToElement(teams, $("#get-article > select"));
+            addTeamsToElement($("#add-article > select"));
+            addTeamsToElement($("#get-article > select"));
             teamName.val(""); //Clear input field
         }
     }
@@ -114,5 +128,29 @@ $("#get-article > button").click(
                 displayDiv.append(articleName);
             }
         }
+    }
+)
+
+$("#export").click(
+    function () {
+        const exportString = btoa(JSON.stringify(articles));
+        //console.log(exportString);
+        download(exportString, "export.txt", "text/html");
+    }
+)
+$("#import").change(
+    function () {
+        const fileObj = $('#import').prop('files')[0];
+        //https://stackoverflow.com/a/12282163/19678321
+        var fr = new FileReader();
+        fr.onload = function () {
+            const articleJSON = JSON.parse(atob(fr.result));
+            //console.log(articleJSON);
+            articles = articleJSON;
+            addTeamsToElement($("#add-article > select"));
+            addTeamsToElement($("#get-article > select"));
+        }
+        fr.readAsText(fileObj);
+
     }
 )
